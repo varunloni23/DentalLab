@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block title %}Book an Appointment{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <h1 class="mb-4">Book an Appointment</h1>
+        <p class="lead">Schedule a consultation or service appointment with our dental laboratory.</p>
+        
+        <div class="card mt-4 mb-4">
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('appointments') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.name.id }}" class="form-label">Full Name</label>
+                        {{ form.name(class="form-control", placeholder="Enter your full name") }}
+                        {% if form.name.errors %}
+                            <div class="text-danger">
+                                {% for error in form.name.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.email.id }}" class="form-label">Email Address</label>
+                        {{ form.email(class="form-control", placeholder="Enter your email") }}
+                        {% if form.email.errors %}
+                            <div class="text-danger">
+                                {% for error in form.email.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.phone.id }}" class="form-label">Phone Number</label>
+                        {{ form.phone(class="form-control", placeholder="Enter your phone number") }}
+                        {% if form.phone.errors %}
+                            <div class="text-danger">
+                                {% for error in form.phone.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.service.id }}" class="form-label">Service</label>
+                        {{ form.service(class="form-select") }}
+                        {% if form.service.errors %}
+                            <div class="text-danger">
+                                {% for error in form.service.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.date.id }}" class="form-label">Preferred Date</label>
+                            {{ form.date(class="form-control datepicker", placeholder="Select date") }}
+                            {% if form.date.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.date.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.time.id }}" class="form-label">Preferred Time</label>
+                            {{ form.time(class="form-control timepicker", placeholder="Select time") }}
+                            {% if form.time.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.time.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.notes.id }}" class="form-label">Additional Notes</label>
+                        {{ form.notes(class="form-control", rows="3", placeholder="Any specific requirements or questions?") }}
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Book Appointment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="bg-light p-4 rounded mt-5">
+            <h3>Why Book with Us?</h3>
+            <ul class="list-group list-group-flush mb-3">
+                <li class="list-group-item bg-transparent">✓ Professional consultation for dental laboratories</li>
+                <li class="list-group-item bg-transparent">✓ Dedicated technicians for your specific needs</li>
+                <li class="list-group-item bg-transparent">✓ Flexible scheduling options</li>
+                <li class="list-group-item bg-transparent">✓ Comprehensive service options</li>
+            </ul>
+            
+            <h3 class="mt-4">Our Process</h3>
+            <ol class="list-group list-group-numbered">
+                <li class="list-group-item bg-transparent">Schedule your appointment</li>
+                <li class="list-group-item bg-transparent">Discuss your requirements with our experts</li>
+                <li class="list-group-item bg-transparent">Receive a detailed quote and timeline</li>
+                <li class="list-group-item bg-transparent">We deliver high-quality dental work</li>
+            </ol>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Contact Information</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Phone:</strong> (123) 456-7890</p>
+                <p><strong>Email:</strong> appointments@dentallab.com</p>
+                <p><strong>Hours:</strong><br>
+                Monday-Friday: 9am-5pm<br>
+                Saturday: 10am-2pm<br>
+                Sunday: Closed</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        flatpickr(".datepicker", {
+            minDate: "today",
+            dateFormat: "Y-m-d",
+            disable: [
+                function(date) {
+                    // Disable weekends
+                    return (date.getDay() === 0 || date.getDay() === 6);
+                }
+            ]
+        });
+        
+        flatpickr(".timepicker", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            minTime: "09:00",
+            maxTime: "17:00",
+            minuteIncrement: 30
+        });
+    });
+</script>
+{% endblock %} 

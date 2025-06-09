@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Products{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Our Products</h1>
+<p class="lead">Browse our selection of high-quality dental materials and supplies.</p>
+
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Categories</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="#" class="list-group-item list-group-item-action">All Products</a>
+                <a href="#" class="list-group-item list-group-item-action">Ceramics</a>
+                <a href="#" class="list-group-item list-group-item-action">Impressions</a>
+                <a href="#" class="list-group-item list-group-item-action">Metals</a>
+                <a href="#" class="list-group-item list-group-item-action">Composites</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        <div class="row">
+            {% for material in materials %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="{{ material.image_url }}" class="card-img-top" alt="{{ material.name }}" onerror="this.src='https://via.placeholder.com/150'">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ material.name }}</h5>
+                        <p class="badge bg-secondary">{{ material.category }}</p>
+                        <p class="card-text">{{ material.description|truncate(100) }}</p>
+                        <p class="fw-bold">${{ material.price }}</p>
+                        <p class="small {% if material.stock > 10 %}text-success{% elif material.stock > 0 %}text-warning{% else %}text-danger{% endif %}">
+                            {% if material.stock > 10 %}
+                                In Stock ({{ material.stock }})
+                            {% elif material.stock > 0 %}
+                                Low Stock ({{ material.stock }} left)
+                            {% else %}
+                                Out of Stock
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ url_for('orders') }}?material={{ material.id }}" class="btn btn-primary btn-sm w-100">Order Now</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="mt-5 p-4 bg-light rounded">
+    <h2>Custom Orders</h2>
+    <p>Don't see what you're looking for? We can source specific materials based on your requirements.</p>
+    <p>Contact us to discuss your custom material needs.</p>
+    <a href="{{ url_for('about') }}" class="btn btn-outline-primary">Contact Us</a>
+</div>
+{% endblock %} 

@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid my-4">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="list-group shadow mb-4">
+                <a href="{{ url_for('admin_dashboard') }}" class="list-group-item list-group-item-action active">
+                    <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                </a>
+                <a href="{{ url_for('admin_appointments') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-calendar-check me-2"></i> Appointments
+                </a>
+                <a href="{{ url_for('admin_orders') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-box me-2"></i> Orders
+                </a>
+                <a href="{{ url_for('admin_materials') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-tools me-2"></i> Materials
+                </a>
+                <a href="{{ url_for('admin_users') }}" class="list-group-item list-group-item-action">
+                    <i class="bi bi-people me-2"></i> Users
+                </a>
+                <a href="{{ url_for('index') }}" class="list-group-item list-group-item-action text-primary">
+                    <i class="bi bi-arrow-left me-2"></i> Back to Site
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-md-10">
+            <h1 class="mb-4">Admin Dashboard</h1>
+            
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <div class="card bg-primary text-white shadow h-100">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-8">
+                                    <h2 class="display-4">{{ appointments_count }}</h2>
+                                    <h5>Appointments</h5>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <i class="bi bi-calendar-check display-3"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-primary border-light">
+                            <a href="{{ url_for('admin_appointments') }}" class="text-white text-decoration-none">
+                                <small>View Details <i class="bi bi-arrow-right ms-1"></i></small>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-4">
+                    <div class="card bg-success text-white shadow h-100">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-8">
+                                    <h2 class="display-4">{{ orders_count }}</h2>
+                                    <h5>Orders</h5>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <i class="bi bi-box display-3"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-success border-light">
+                            <a href="{{ url_for('admin_orders') }}" class="text-white text-decoration-none">
+                                <small>View Details <i class="bi bi-arrow-right ms-1"></i></small>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-4">
+                    <div class="card bg-info text-white shadow h-100">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-8">
+                                    <h2 class="display-4">{{ materials_count }}</h2>
+                                    <h5>Materials</h5>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <i class="bi bi-tools display-3"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-info border-light">
+                            <a href="{{ url_for('admin_materials') }}" class="text-white text-decoration-none">
+                                <small>View Details <i class="bi bi-arrow-right ms-1"></i></small>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-4">
+                    <div class="card bg-danger text-white shadow h-100">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-8">
+                                    <h2 class="display-4">{{ users_count }}</h2>
+                                    <h5>Users</h5>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <i class="bi bi-people display-3"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-danger border-light">
+                            <a href="{{ url_for('admin_users') }}" class="text-white text-decoration-none">
+                                <small>View Details <i class="bi bi-arrow-right ms-1"></i></small>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card shadow mb-4">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Recent Appointments</h5>
+                            <a href="{{ url_for('admin_appointments') }}" class="btn btn-sm btn-light">View All</a>
+                        </div>
+                        <div class="card-body">
+                            {% if recent_appointments %}
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Date</th>
+                                                <th>Service</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for appointment in recent_appointments %}
+                                                <tr>
+                                                    <td>{{ appointment.name }}</td>
+                                                    <td>{{ appointment.date }}</td>
+                                                    <td>{{ appointment.service }}</td>
+                                                    <td>
+                                                        <span class="badge {% if appointment.status == 'completed' %}bg-success{% elif appointment.status == 'confirmed' %}bg-primary{% else %}bg-warning{% endif %}">
+                                                            {{ appointment.status }}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <p class="text-center mb-0">No appointments found.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card shadow mb-4">
+                        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Recent Orders</h5>
+                            <a href="{{ url_for('admin_orders') }}" class="btn btn-sm btn-light">View All</a>
+                        </div>
+                        <div class="card-body">
+                            {% if recent_orders %}
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Customer</th>
+                                                <th>Material</th>
+                                                <th>Total</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for order in recent_orders %}
+                                                <tr>
+                                                    <td>{{ order.customer_name }}</td>
+                                                    <td>{{ order.material.name }}</td>
+                                                    <td>${{ order.total_price }}</td>
+                                                    <td>
+                                                        <span class="badge {% if order.status == 'completed' %}bg-success{% elif order.status == 'processing' %}bg-primary{% else %}bg-warning{% endif %}">
+                                                            {{ order.status }}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <p class="text-center mb-0">No orders found.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

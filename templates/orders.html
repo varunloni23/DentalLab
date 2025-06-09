@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+
+{% block title %}Place an Order{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <h1 class="mb-4">Place an Order</h1>
+        <p class="lead">Order dental materials and supplies for your practice.</p>
+        
+        <div class="card mt-4 mb-4">
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('orders') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.customer_name.id }}" class="form-label">Full Name</label>
+                        {{ form.customer_name(class="form-control", placeholder="Enter your full name") }}
+                        {% if form.customer_name.errors %}
+                            <div class="text-danger">
+                                {% for error in form.customer_name.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.customer_email.id }}" class="form-label">Email Address</label>
+                        {{ form.customer_email(class="form-control", placeholder="Enter your email") }}
+                        {% if form.customer_email.errors %}
+                            <div class="text-danger">
+                                {% for error in form.customer_email.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.customer_phone.id }}" class="form-label">Phone Number</label>
+                        {{ form.customer_phone(class="form-control", placeholder="Enter your phone number") }}
+                        {% if form.customer_phone.errors %}
+                            <div class="text-danger">
+                                {% for error in form.customer_phone.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.material_id.id }}" class="form-label">Material</label>
+                        {{ form.material_id(class="form-select", id="material-select") }}
+                        {% if form.material_id.errors %}
+                            <div class="text-danger">
+                                {% for error in form.material_id.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <div id="material-details" class="mt-2 small"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.quantity.id }}" class="form-label">Quantity</label>
+                        {{ form.quantity(class="form-control", min="1", id="quantity-input") }}
+                        {% if form.quantity.errors %}
+                            <div class="text-danger">
+                                {% for error in form.quantity.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.delivery_address.id }}" class="form-label">Delivery Address</label>
+                        {{ form.delivery_address(class="form-control", rows="3", placeholder="Enter your delivery address") }}
+                        {% if form.delivery_address.errors %}
+                            <div class="text-danger">
+                                {% for error in form.delivery_address.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="alert alert-info" id="total-price">
+                        Total: <strong>$0.00</strong>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Place Order</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card mt-5">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Recent Orders</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_orders %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Material</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in recent_orders %}
+                                <tr>
+                                    <td>{{ order.created_at.strftime('%Y-%m-%d') }}</td>
+                                    <td>{{ order.material.name }}</td>
+                                    <td>{{ order.quantity }}</td>
+                                    <td>${{ order.total_price }}</td>
+                                    <td>
+                                        <span class="badge {% if order.status == 'completed' %}bg-success{% elif order.status == 'processing' %}bg-primary{% else %}bg-warning{% endif %}">
+                                            {{ order.status }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p>No recent orders to display.</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="bg-light p-4 rounded mt-4">
+            <h3>Ordering Information</h3>
+            <ul class="list-group list-group-flush mb-3">
+                <li class="list-group-item bg-transparent">✓ Orders are processed within 1-2 business days</li>
+                <li class="list-group-item bg-transparent">✓ Shipping typically takes 3-5 business days</li>
+                <li class="list-group-item bg-transparent">✓ Free shipping on orders over $500</li>
+                <li class="list-group-item bg-transparent">✓ Bulk discounts available for large orders</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get URL parameters (for pre-selecting material)
+        const urlParams = new URLSearchParams(window.location.search);
+        const materialParam = urlParams.get('material');
+        
+        if (materialParam) {
+            const materialSelect = document.getElementById('material-select');
+            materialSelect.value = materialParam;
+            updateMaterialDetails();
+        }
+        
+        // Material select change handler
+        const materialSelect = document.getElementById('material-select');
+        materialSelect.addEventListener('change', updateMaterialDetails);
+        
+        // Quantity change handler
+        const quantityInput = document.getElementById('quantity-input');
+        quantityInput.addEventListener('change', updateTotalPrice);
+        
+        // Initial update
+        updateMaterialDetails();
+        
+        function updateMaterialDetails() {
+            const materialId = materialSelect.value;
+            
+            // Get material details using the API
+            fetch('/api/materials')
+                .then(response => response.json())
+                .then(materials => {
+                    const material = materials.find(m => m.id == materialId);
+                    
+                    if (material) {
+                        document.getElementById('material-details').innerHTML = `
+                            <div class="card card-body bg-light">
+                                <p>${material.description}</p>
+                                <p>Price: <strong>$${material.price.toFixed(2)}</strong> | 
+                                In Stock: <strong>${material.stock}</strong></p>
+                            </div>
+                        `;
+                        
+                        updateTotalPrice();
+                    }
+                });
+        }
+        
+        function updateTotalPrice() {
+            const materialId = materialSelect.value;
+            const quantity = parseInt(quantityInput.value) || 0;
+            
+            fetch('/api/materials')
+                .then(response => response.json())
+                .then(materials => {
+                    const material = materials.find(m => m.id == materialId);
+                    
+                    if (material) {
+                        const total = material.price * quantity;
+                        document.getElementById('total-price').innerHTML = `
+                            Total: <strong>$${total.toFixed(2)}</strong>
+                        `;
+                    }
+                });
+        }
+    });
+</script>
+{% endblock %} 

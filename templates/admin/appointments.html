@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin - Appointments{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Appointments Management</h1>
+
+<div class="card">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">All Appointments</h5>
+        <div>
+            <a href="{{ url_for('index') }}" class="btn btn-sm btn-light">Back to Site</a>
+        </div>
+    </div>
+    <div class="card-body">
+        {% if appointments %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Service</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appointment in appointments %}
+                            <tr>
+                                <td>{{ appointment.id }}</td>
+                                <td>{{ appointment.name }}</td>
+                                <td>{{ appointment.email }}</td>
+                                <td>{{ appointment.phone }}</td>
+                                <td>{{ appointment.service }}</td>
+                                <td>{{ appointment.date }}</td>
+                                <td>{{ appointment.time }}</td>
+                                <td>
+                                    <span class="badge {% if appointment.status == 'completed' %}bg-success{% elif appointment.status == 'confirmed' %}bg-primary{% elif appointment.status == 'cancelled' %}bg-danger{% else %}bg-warning{% endif %}">
+                                        {{ appointment.status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewAppointment{{ appointment.id }}">
+                                            View
+                                        </button>
+                                        <form action="{{ url_for('update_appointment_status', appointment_id=appointment.id) }}" method="post" class="d-inline">
+                                            <input type="hidden" name="status" value="confirmed">
+                                            {{ form.csrf_token }}
+                                            <button type="submit" class="btn btn-outline-success" {% if appointment.status == 'confirmed' or appointment.status == 'completed' or appointment.status == 'cancelled' %}disabled{% endif %}>
+                                                Confirm
+                                            </button>
+                                        </form>
+                                        <form action="{{ url_for('update_appointment_status', appointment_id=appointment.id) }}" method="post" class="d-inline">
+                                            <input type="hidden" name="status" value="completed">
+                                            {{ form.csrf_token }}
+                                            <button type="submit" class="btn btn-outline-info" {% if appointment.status == 'completed' or appointment.status == 'cancelled' or appointment.status == 'pending' %}disabled{% endif %}>
+                                                Complete
+                                            </button>
+                                        </form>
+                                        <form action="{{ url_for('update_appointment_status', appointment_id=appointment.id) }}" method="post" class="d-inline">
+                                            <input type="hidden" name="status" value="cancelled">
+                                            {{ form.csrf_token }}
+                                            <button type="submit" class="btn btn-outline-danger" {% if appointment.status == 'cancelled' or appointment.status == 'completed' %}disabled{% endif %}>
+                                                Cancel
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <!-- View Appointment Modal -->
+                            <div class="modal fade" id="viewAppointment{{ appointment.id }}" tabindex="-1" aria-labelledby="viewAppointmentLabel{{ appointment.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="viewAppointmentLabel{{ appointment.id }}">Appointment Details</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p><strong>ID:</strong> {{ appointment.id }}</p>
+                                            <p><strong>Name:</strong> {{ appointment.name }}</p>
+                                            <p><strong>Email:</strong> {{ appointment.email }}</p>
+                                            <p><strong>Phone:</strong> {{ appointment.phone }}</p>
+                                            <p><strong>Service:</strong> {{ appointment.service }}</p>
+                                            <p><strong>Date:</strong> {{ appointment.date }}</p>
+                                            <p><strong>Time:</strong> {{ appointment.time }}</p>
+                                            <p><strong>Status:</strong> {{ appointment.status }}</p>
+                                            <p><strong>Created:</strong> {{ appointment.created_at }}</p>
+                                            {% if appointment.notes %}
+                                            <p><strong>Notes:</strong> {{ appointment.notes }}</p>
+                                            {% endif %}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p>No appointments found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,521 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin - Materials{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3"><i class="bi bi-box-seam me-2"></i>Materials Management</h1>
+        <div>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#materialModal">
+                <i class="bi bi-plus-circle me-2"></i>Add New Material
+            </button>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-primary ms-2">
+                <i class="bi bi-speedometer2 me-2"></i>Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-primary h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Total Materials</h6>
+                            <h3 class="mb-0">{{ materials|length }}</h3>
+                        </div>
+                        <div class="icon-shape bg-primary text-white rounded-circle shadow">
+                            <i class="bi bi-boxes"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-success h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">In Stock</h6>
+                            <h3 class="mb-0">{{ materials|selectattr('stock', '>', 0)|list|length }}</h3>
+                        </div>
+                        <div class="icon-shape bg-success text-white rounded-circle shadow">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-warning h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Low Stock</h6>
+                            <h3 class="mb-0">{{ materials|selectattr('stock', '<=', 10)|selectattr('stock', '>', 0)|list|length }}</h3>
+                        </div>
+                        <div class="icon-shape bg-warning text-white rounded-circle shadow">
+                            <i class="bi bi-exclamation-triangle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-danger h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">Out of Stock</h6>
+                            <h3 class="mb-0">{{ materials|selectattr('stock', '==', 0)|list|length }}</h3>
+                        </div>
+                        <div class="icon-shape bg-danger text-white rounded-circle shadow">
+                            <i class="bi bi-x-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter and Search -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row g-2">
+                <div class="col-md-4">
+                    <input type="text" id="search-materials" class="form-control" placeholder="Search materials...">
+                </div>
+                <div class="col-md-3">
+                    <select id="filter-category" class="form-select">
+                        <option value="">All Categories</option>
+                        <option value="Ceramics">Ceramics</option>
+                        <option value="Impressions">Impressions</option>
+                        <option value="Metals">Metals</option>
+                        <option value="Composites">Composites</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select id="filter-stock" class="form-select">
+                        <option value="">All Stock Levels</option>
+                        <option value="in-stock">In Stock</option>
+                        <option value="low-stock">Low Stock (≤10)</option>
+                        <option value="out-of-stock">Out of Stock</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button id="reset-filters" class="btn btn-outline-secondary w-100">Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Materials Table -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <h5 class="mb-0">Material Inventory</h5>
+        </div>
+        <div class="card-body p-0">
+            {% if materials %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle" id="materials-table">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col" class="ps-3">ID</th>
+                                <th scope="col">Image</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Stock</th>
+                                <th scope="col" class="text-end pe-3">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for material in materials %}
+                                <tr data-material-id="{{ material.id }}" class="material-row">
+                                    <td class="ps-3">{{ material.id }}</td>
+                                    <td>
+                                        <img src="{{ material.image_url }}" alt="{{ material.name }}" class="rounded" width="50" height="50" onerror="this.src='/static/images/placeholder.jpg'">
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <span class="fw-semibold">{{ material.name }}</span>
+                                            <small class="text-muted">{{ material.description|truncate(50) }}</small>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge bg-light text-dark">{{ material.category }}</span></td>
+                                    <td>${{ material.price }}</td>
+                                    <td>
+                                        <span class="badge {% if material.stock > 10 %}bg-success{% elif material.stock > 0 %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ material.stock }}
+                                        </span>
+                                    </td>
+                                    <td class="text-end pe-3">
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary btn-edit" data-bs-toggle="modal" data-bs-target="#materialModal" data-material-id="{{ material.id }}">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-outline-success btn-stock" data-bs-toggle="modal" data-bs-target="#stockModal" data-material-id="{{ material.id }}" data-material-name="{{ material.name }}">
+                                                <i class="bi bi-plus-slash-minus"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger btn-delete" data-bs-toggle="modal" data-bs-target="#deleteModal" data-material-id="{{ material.id }}" data-material-name="{{ material.name }}">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="p-4 text-center">
+                    <div class="py-4">
+                        <i class="bi bi-inbox display-3 text-muted"></i>
+                        <h5 class="mt-3">No materials found</h5>
+                        <p class="text-muted">Add your first material to get started</p>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#materialModal">Add Material</button>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Material Add/Edit Modal -->
+<div class="modal fade" id="materialModal" tabindex="-1" aria-labelledby="materialModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="materialModalLabel">Add New Material</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="materialForm" action="{{ url_for('admin_materials_edit') }}" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" id="material_id" name="material_id" value="">
+                    {{ form.csrf_token }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Material Name</label>
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Enter material name" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="category" class="form-label">Category</label>
+                                <select class="form-select" id="category" name="category" required>
+                                    <option value="">Select a category</option>
+                                    <option value="Ceramics">Ceramics</option>
+                                    <option value="Impressions">Impressions</option>
+                                    <option value="Metals">Metals</option>
+                                    <option value="Composites">Composites</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="price" class="form-label">Price ($)</label>
+                                <input type="number" class="form-control" id="price" name="price" step="0.01" min="0" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="stock" class="form-label">Stock</label>
+                                <input type="number" class="form-control" id="stock" name="stock" min="0" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control" id="description" name="description" rows="4"></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="image" class="form-label">Material Image</label>
+                                <input type="file" class="form-control" id="image" name="image" accept=".jpg, .jpeg, .png">
+                                <div class="form-text">Upload a JPG, JPEG, or PNG image (max 16MB)</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Preview</label>
+                                <div class="border p-2 text-center rounded">
+                                    <img id="image-preview" src="/static/images/placeholder.jpg" class="img-fluid" style="max-height: 150px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="materialForm" class="btn btn-primary">Save Material</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stock Adjustment Modal -->
+<div class="modal fade" id="stockModal" tabindex="-1" aria-labelledby="stockModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="stockModalLabel">Adjust Stock</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="stockForm" action="{{ url_for('admin_adjust_stock') }}" method="POST">
+                    <input type="hidden" id="stock_material_id" name="material_id">
+                    {{ form.csrf_token }}
+                    <div class="mb-3">
+                        <label class="form-label">Material</label>
+                        <input type="text" class="form-control" id="stock_material_name" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="current_stock" class="form-label">Current Stock</label>
+                        <input type="number" class="form-control" id="current_stock" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="adjustment" class="form-label">Adjustment</label>
+                        <div class="input-group">
+                            <button type="button" class="btn btn-outline-secondary" id="decrease-stock">-</button>
+                            <input type="number" class="form-control text-center" id="adjustment" name="adjustment" value="0">
+                            <button type="button" class="btn btn-outline-secondary" id="increase-stock">+</button>
+                        </div>
+                        <div class="form-text">Use positive values to add stock, negative to remove</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_stock" class="form-label">New Stock</label>
+                        <input type="number" class="form-control" id="new_stock" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="adjustment_reason" class="form-label">Reason for Adjustment</label>
+                        <select class="form-select" id="adjustment_reason" name="reason">
+                            <option value="restocking">Restocking</option>
+                            <option value="correction">Inventory Correction</option>
+                            <option value="damaged">Damaged/Expired</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3" id="other_reason_container" style="display: none;">
+                        <label for="other_reason" class="form-label">Specify Reason</label>
+                        <input type="text" class="form-control" id="other_reason" name="other_reason">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="stockForm" class="btn btn-primary">Save Adjustment</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="delete-material-name"></strong>?</p>
+                <p class="text-danger"><i class="bi bi-exclamation-triangle"></i> This action cannot be undone.</p>
+                <form id="deleteForm" action="{{ url_for('admin_delete_material') }}" method="POST">
+                    <input type="hidden" id="delete_material_id" name="material_id">
+                    {{ form.csrf_token }}
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="deleteForm" class="btn btn-danger">Delete Material</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Image preview
+        const imageInput = document.getElementById('image');
+        const imagePreview = document.getElementById('image-preview');
+        
+        imageInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                };
+                
+                reader.readAsDataURL(this.files[0]);
+            } else {
+                imagePreview.src = '/static/images/placeholder.jpg';
+            }
+        });
+        
+        // Handle image load error
+        imagePreview.addEventListener('error', function() {
+            this.src = '/static/images/placeholder.jpg';
+        });
+
+        // Edit material
+        const editButtons = document.querySelectorAll('.btn-edit');
+        editButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const materialId = this.getAttribute('data-material-id');
+                document.getElementById('materialModalLabel').textContent = 'Edit Material';
+                
+                // Fetch material data via AJAX
+                fetch(`/api/materials/${materialId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('material_id').value = data.id;
+                        document.getElementById('name').value = data.name;
+                        document.getElementById('category').value = data.category;
+                        document.getElementById('price').value = data.price;
+                        document.getElementById('stock').value = data.stock;
+                        document.getElementById('description').value = data.description;
+                        
+                        // Set image preview but don't set file input (can't pre-fill file inputs for security reasons)
+                        if (data.image_url) {
+                            imagePreview.src = data.image_url;
+                        } else {
+                            imagePreview.src = '/static/images/placeholder.jpg';
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+
+        // Reset modal on close
+        const materialModal = document.getElementById('materialModal');
+        materialModal.addEventListener('hidden.bs.modal', function() {
+            document.getElementById('materialForm').reset();
+            document.getElementById('material_id').value = '';
+            document.getElementById('materialModalLabel').textContent = 'Add New Material';
+            imagePreview.src = '/static/images/placeholder.jpg';
+        });
+
+        // Stock adjustment modal
+        const stockButtons = document.querySelectorAll('.btn-stock');
+        const currentStock = document.getElementById('current_stock');
+        const adjustment = document.getElementById('adjustment');
+        const newStock = document.getElementById('new_stock');
+        
+        stockButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const materialId = this.getAttribute('data-material-id');
+                const materialName = this.getAttribute('data-material-name');
+                
+                document.getElementById('stock_material_id').value = materialId;
+                document.getElementById('stock_material_name').value = materialName;
+                
+                // Fetch current stock via AJAX
+                fetch(`/api/materials/${materialId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        currentStock.value = data.stock;
+                        adjustment.value = 0;
+                        newStock.value = data.stock;
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+        
+        // Update new stock on adjustment change
+        adjustment.addEventListener('input', function() {
+            newStock.value = parseInt(currentStock.value) + parseInt(this.value || 0);
+        });
+        
+        // Increase/decrease buttons
+        document.getElementById('increase-stock').addEventListener('click', function() {
+            adjustment.value = parseInt(adjustment.value || 0) + 1;
+            newStock.value = parseInt(currentStock.value) + parseInt(adjustment.value);
+        });
+        
+        document.getElementById('decrease-stock').addEventListener('click', function() {
+            adjustment.value = parseInt(adjustment.value || 0) - 1;
+            newStock.value = parseInt(currentStock.value) + parseInt(adjustment.value);
+        });
+
+        // Delete modal
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const materialId = this.getAttribute('data-material-id');
+                const materialName = this.getAttribute('data-material-name');
+                
+                document.getElementById('delete_material_id').value = materialId;
+                document.getElementById('delete-material-name').textContent = materialName;
+            });
+        });
+
+        // Toggle other reason field
+        const adjustmentReason = document.getElementById('adjustment_reason');
+        const otherReasonContainer = document.getElementById('other_reason_container');
+        
+        adjustmentReason.addEventListener('change', function() {
+            if (this.value === 'other') {
+                otherReasonContainer.style.display = 'block';
+            } else {
+                otherReasonContainer.style.display = 'none';
+            }
+        });
+
+        // Search and filtering
+        const searchInput = document.getElementById('search-materials');
+        const categoryFilter = document.getElementById('filter-category');
+        const stockFilter = document.getElementById('filter-stock');
+        const resetButton = document.getElementById('reset-filters');
+        const tableRows = document.querySelectorAll('.material-row');
+        
+        function filterTable() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const category = categoryFilter.value;
+            const stockLevel = stockFilter.value;
+            
+            tableRows.forEach(row => {
+                const name = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                const rowCategory = row.querySelector('td:nth-child(4)').textContent;
+                const stock = parseInt(row.querySelector('td:nth-child(6)').textContent);
+                
+                let showRow = name.includes(searchTerm);
+                
+                if (category && rowCategory !== category) {
+                    showRow = false;
+                }
+                
+                if (stockLevel) {
+                    if (stockLevel === 'in-stock' && stock <= 0) {
+                        showRow = false;
+                    } else if (stockLevel === 'low-stock' && (stock > 10 || stock <= 0)) {
+                        showRow = false;
+                    } else if (stockLevel === 'out-of-stock' && stock > 0) {
+                        showRow = false;
+                    }
+                }
+                
+                row.style.display = showRow ? '' : 'none';
+            });
+        }
+        
+        searchInput.addEventListener('input', filterTable);
+        categoryFilter.addEventListener('change', filterTable);
+        stockFilter.addEventListener('change', filterTable);
+        
+        resetButton.addEventListener('click', function() {
+            searchInput.value = '';
+            categoryFilter.value = '';
+            stockFilter.value = '';
+            
+            tableRows.forEach(row => {
+                row.style.display = '';
+            });
+        });
+    });
+</script>
+{% endblock %} 

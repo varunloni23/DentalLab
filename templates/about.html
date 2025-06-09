@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h1 class="mb-4">About Dental Lab</h1>
+        <p class="lead">We are a premium dental laboratory dedicated to providing high-quality dental prosthetics and services to dental professionals.</p>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3>Our Mission</h3>
+                <p>To deliver exceptional dental laboratory services with precision, reliability, and innovation, helping dental professionals provide the highest standard of care to their patients.</p>
+            </div>
+        </div>
+        
+        <h3 class="mb-3">Our Expertise</h3>
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h4>Advanced Technology</h4>
+                        <p>We utilize the latest digital scanning, CAD/CAM technology, and 3D printing to create precise and customized dental restorations.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h4>Quality Materials</h4>
+                        <p>We source only the highest quality materials from trusted suppliers to ensure durability and aesthetic excellence in all our products.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h4>Expert Technicians</h4>
+                        <p>Our team of skilled technicians brings years of experience and craftsmanship to every dental restoration we create.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h4>Custom Solutions</h4>
+                        <p>We work closely with dental professionals to provide customized solutions tailored to their specific requirements and preferences.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h3 class="mb-3">Our Values</h3>
+        <ul class="list-group mb-4">
+            <li class="list-group-item">
+                <strong>Quality:</strong> We are committed to excellence in every aspect of our work.
+            </li>
+            <li class="list-group-item">
+                <strong>Precision:</strong> We pay meticulous attention to detail in all our dental restorations.
+            </li>
+            <li class="list-group-item">
+                <strong>Reliability:</strong> We deliver on our promises with consistent quality and on-time service.
+            </li>
+            <li class="list-group-item">
+                <strong>Innovation:</strong> We continuously adopt and implement new technologies and techniques.
+            </li>
+            <li class="list-group-item">
+                <strong>Partnership:</strong> We build long-term relationships with dental professionals based on trust and collaboration.
+            </li>
+        </ul>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Contact Information</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Address:</strong><br>
+                123 Dental Way<br>
+                Suite 456<br>
+                San Francisco, CA 94103</p>
+                
+                <p><strong>Phone:</strong><br>
+                (123) 456-7890</p>
+                
+                <p><strong>Email:</strong><br>
+                info@dentallab.com</p>
+                
+                <p><strong>Hours:</strong><br>
+                Monday-Friday: 9am-5pm<br>
+                Saturday: 10am-2pm<br>
+                Sunday: Closed</p>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Get in Touch</h5>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" placeholder="Your name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" placeholder="Your email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Message</label>
+                        <textarea class="form-control" id="message" rows="3" placeholder="Your message"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

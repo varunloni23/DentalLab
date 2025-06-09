@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-person-circle me-2"></i>Account</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="flex-shrink-0">
+                            <div class="avatar-circle bg-primary text-white">
+                                {{ user.username[0].upper() }}
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <h5 class="mb-0">{{ user.username }}</h5>
+                            <p class="text-muted mb-0">{{ user.email }}</p>
+                        </div>
+                    </div>
+                    <p class="text-muted small">Member since {{ user.created_at.strftime('%B %d, %Y') }}</p>
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('profile') }}" class="btn btn-outline-primary">
+                            <i class="bi bi-pencil-square me-2"></i>Edit Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="list-group shadow mb-4">
+                <a href="#appointments" class="list-group-item list-group-item-action active" data-bs-toggle="list">
+                    <i class="bi bi-calendar-check me-2"></i> My Appointments
+                </a>
+                <a href="#orders" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                    <i class="bi bi-box me-2"></i> My Orders
+                </a>
+                <a href="#settings" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                    <i class="bi bi-gear me-2"></i> Settings
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="appointments">
+                    <div class="card shadow">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0">My Appointments</h4>
+                            <a href="{{ url_for('appointments') }}" class="btn btn-light btn-sm">Book New Appointment</a>
+                        </div>
+                        <div class="card-body">
+                            {% if appointments %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Time</th>
+                                                <th>Service</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for appointment in appointments %}
+                                                <tr>
+                                                    <td>{{ appointment.date }}</td>
+                                                    <td>{{ appointment.time }}</td>
+                                                    <td>{{ appointment.service }}</td>
+                                                    <td>
+                                                        <span class="badge {% if appointment.status == 'completed' %}bg-success{% elif appointment.status == 'confirmed' %}bg-primary{% else %}bg-warning{% endif %}">
+                                                            {{ appointment.status }}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-outline-primary">View Details</button>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <div class="alert alert-info">
+                                    <p class="mb-0">You don't have any appointments yet.</p>
+                                </div>
+                                <div class="text-center">
+                                    <a href="{{ url_for('appointments') }}" class="btn btn-primary">Book an Appointment</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="orders">
+                    <div class="card shadow">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0">My Orders</h4>
+                            <a href="{{ url_for('orders') }}" class="btn btn-light btn-sm">Place New Order</a>
+                        </div>
+                        <div class="card-body">
+                            {% if orders %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Order Date</th>
+                                                <th>Material</th>
+                                                <th>Quantity</th>
+                                                <th>Total</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for order in orders %}
+                                                <tr>
+                                                    <td>{{ order.created_at.strftime('%Y-%m-%d') }}</td>
+                                                    <td>{{ order.material.name }}</td>
+                                                    <td>{{ order.quantity }}</td>
+                                                    <td>${{ order.total_price }}</td>
+                                                    <td>
+                                                        <span class="badge {% if order.status == 'completed' %}bg-success{% elif order.status == 'processing' %}bg-primary{% else %}bg-warning{% endif %}">
+                                                            {{ order.status }}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-outline-primary">View Details</button>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <div class="alert alert-info">
+                                    <p class="mb-0">You don't have any orders yet.</p>
+                                </div>
+                                <div class="text-center">
+                                    <a href="{{ url_for('orders') }}" class="btn btn-primary">Place an Order</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="settings">
+                    <div class="card shadow">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0">Account Settings</h4>
+                        </div>
+                        <div class="card-body">
+                            <h5>Change Password</h5>
+                            <form>
+                                <div class="mb-3">
+                                    <label for="current_password" class="form-label">Current Password</label>
+                                    <input type="password" class="form-control" id="current_password">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="new_password" class="form-label">New Password</label>
+                                    <input type="password" class="form-control" id="new_password">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="confirm_new_password" class="form-label">Confirm New Password</label>
+                                    <input type="password" class="form-control" id="confirm_new_password">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Update Password</button>
+                            </form>
+                            
+                            <hr>
+                            
+                            <h5>Update Profile Information</h5>
+                            <form>
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">Username</label>
+                                    <input type="text" class="form-control" id="username" value="{{ user.username }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" id="email" value="{{ user.email }}">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Update Profile</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Enable Bootstrap tabs
+        var triggerTabList = [].slice.call(document.querySelectorAll('.list-group-item'))
+        triggerTabList.forEach(function (triggerEl) {
+            var tabTrigger = new bootstrap.Tab(triggerEl)
+            
+            triggerEl.addEventListener('click', function (event) {
+                event.preventDefault()
+                tabTrigger.show()
+                
+                // Update active state on list items
+                triggerTabList.forEach(function(el) {
+                    el.classList.remove('active');
+                });
+                triggerEl.classList.add('active');
+            })
+        })
+    });
+</script>
+{% endblock %} 

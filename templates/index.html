@@ -1,0 +1,539 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Premier Dental Laboratory Services{% endblock %}
+
+{% block hero %}
+<!-- Hero Section -->
+<div class="hero-section position-relative overflow-hidden">
+    <div class="hero-bg" style="background-image: url('/static/images/dental-lab-hero.jpg');"></div>
+    <div class="container position-relative py-5 mt-4">
+        <div class="row min-vh-80 align-items-center">
+            <div class="col-lg-7 py-5 text-white animate__animated animate__fadeIn position-relative z-3">
+                <span class="badge bg-white text-primary px-3 py-2 mb-4 d-inline-block">Premium Dental Laboratory</span>
+                <h1 class="display-3 fw-bold mb-4 hero-title">Advanced Dental <br>Laboratory <span class="text-accent">Solutions</span></h1>
+                <p class="lead hero-subtitle mb-4">Precision craftsmanship with cutting-edge technology for exceptional dental restorations that redefine excellence.</p>
+                <div class="d-flex flex-wrap gap-3 mt-5">
+                    <a href="{{ url_for('appointments') }}" class="btn btn-primary btn-lg shadow px-4 py-3">
+                        <i class="bi bi-calendar-check me-2"></i>Book Consultation
+                    </a>
+                    <a href="{{ url_for('services') }}" class="btn btn-outline-light btn-lg px-4 py-3">
+                        <i class="bi bi-info-circle me-2"></i>Explore Services
+                    </a>
+                </div>
+                <div class="mt-5 pt-2 d-flex flex-wrap align-items-center">
+                    <div class="me-4 mb-3 mb-md-0">
+                        <span class="badge bg-accent text-dark fw-bold rounded-pill px-4 py-2 fs-6 border border-2 border-white border-opacity-25">
+                            <i class="bi bi-star-fill me-2"></i> Trusted by 200+ Dental Practices
+                        </span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <a href="tel:1234567890" class="text-white d-flex align-items-center text-decoration-none">
+                            <div class="icon-circle me-2">
+                                <i class="bi bi-telephone-fill"></i>
+                            </div>
+                        <span class="text-light">(123) 456-7890</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block position-relative z-3">
+                <div class="hero-image-container animate__animated animate__fadeInRight">
+                    <!-- Optional: Add a floating image here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Decorative Elements -->
+    <div class="hero-circle-1"></div>
+    <div class="hero-circle-2"></div>
+    <div class="hero-line"></div>
+</div>
+
+<style>
+.z-3 {
+    z-index: 3;
+}
+
+.icon-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--accent-gold);
+    color: var(--dark-color);
+}
+
+.hero-circle-1 {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0) 70%);
+    top: 10%;
+    right: 10%;
+    z-index: 0;
+}
+
+.hero-circle-2 {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    bottom: 15%;
+    left: 5%;
+    z-index: 0;
+}
+
+.hero-line {
+    position: absolute;
+    width: 150px;
+    height: 3px;
+    background: linear-gradient(to right, var(--accent-gold), transparent);
+    bottom: 35%;
+    left: 0;
+    z-index: 0;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm hover-card">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-wrapper mb-4">
+                            <i class="bi bi-award"></i>
+                        </div>
+                        <h4 class="fw-bold">Premium Quality</h4>
+                        <p class="text-muted">Our restorations are crafted with precision and care, using only the highest quality materials.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm hover-card">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-wrapper mb-4">
+                            <i class="bi bi-stopwatch"></i>
+                        </div>
+                        <h4 class="fw-bold">Fast Turnaround</h4>
+                        <p class="text-muted">Our efficient workflow ensures quick delivery without compromising on quality.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm hover-card">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-wrapper mb-4">
+                            <i class="bi bi-tools"></i>
+                        </div>
+                        <h4 class="fw-bold">Advanced Technology</h4>
+                        <p class="text-muted">We utilize state-of-the-art digital workflows and CAD/CAM technology for superior results.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <p class="section-subtitle">What We Offer</p>
+            <h2 class="fw-bold section-title">Our Specialized Services</h2>
+            <p class="text-muted mx-auto" style="max-width: 600px;">Comprehensive dental laboratory services designed to meet the needs of modern dental practices.</p>
+        </div>
+        <div class="row g-4">
+            {% for service in services %}
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card h-100 border-0 shadow-sm service-card">
+                    <div class="card-body p-4">
+                        <div class="service-icon text-primary">
+                            {% if service.icon %}
+                                {{ service.icon|safe }}
+                            {% else %}
+                                <i class="bi bi-gear-fill"></i>
+                            {% endif %}
+                        </div>
+                        <h5 class="card-title fw-bold mt-4">{{ service.title }}</h5>
+                        <p class="card-text text-muted">{{ service.description|truncate(100) }}</p>
+                        <div class="mt-auto pt-3">
+                            <p class="mb-0 text-primary fw-bold small">{{ service.price_range }}</p>
+                            <a href="{{ url_for('services') }}" class="stretched-link"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-5">
+            <a href="{{ url_for('services') }}" class="btn btn-primary">View All Services <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <p class="section-subtitle">Quality Materials</p>
+            <h2 class="fw-bold section-title">Featured Products</h2>
+            <p class="text-muted mx-auto" style="max-width: 600px;">Premium-grade dental materials for exceptional restorations and dental appliances.</p>
+        </div>
+        <div class="row g-4">
+            {% for material in materials %}
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card h-100 border-0 shadow-sm product-card">
+                    <div class="card-img-container">
+                        <img src="{{ material.image_url }}" class="card-img-top" alt="{{ material.name }}" onerror="this.src='/static/images/placeholder.jpg'">
+                        {% if material.stock > 0 %}
+                        <span class="badge bg-success position-absolute top-0 end-0 m-2">In Stock</span>
+                        {% else %}
+                        <span class="badge bg-danger position-absolute top-0 end-0 m-2">Out of Stock</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body p-4">
+                        <h5 class="card-title fw-bold">{{ material.name }}</h5>
+                        <p class="card-text text-muted small">{{ material.description|truncate(80) }}</p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <span class="fw-bold fs-5 text-primary">${{ material.price }}</span>
+                            <a href="{{ url_for('products') }}" class="btn btn-sm btn-primary rounded-pill px-3">
+                                <i class="bi bi-eye me-1"></i>View
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-5">
+            <a href="{{ url_for('products') }}" class="btn btn-primary">Browse All Products <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <p class="section-subtitle">Trusted by Professionals</p>
+            <h2 class="fw-bold section-title">What Dentists Say About Us</h2>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <div class="testimonial-card text-center p-4 mx-3">
+                                <div class="testimonial-rating mb-3">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                </div>
+                                <p class="testimonial-text mb-4">"The quality of their work is exceptional. Every crown fits perfectly on the first try. Their attention to detail is remarkable, and the aesthetics are top-notch."</p>
+                                <div class="testimonial-author">
+                                    <h6 class="mb-1">Dr. Sarah Johnson</h6>
+                                    <p class="small text-muted mb-0">Smile Dental Clinic</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="testimonial-card text-center p-4 mx-3">
+                                <div class="testimonial-rating mb-3">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                </div>
+                                <p class="testimonial-text mb-4">"I've been working with this lab for over 5 years, and they consistently deliver high-quality restorations on time. Their digital workflow has made the process seamless."</p>
+                                <div class="testimonial-author">
+                                    <h6 class="mb-1">Dr. Michael Chen</h6>
+                                    <p class="small text-muted mb-0">Advanced Dental Associates</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-3 col-6">
+                <div class="stat-card text-center">
+                    <div class="icon">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <div class="stat-value">200+</div>
+                    <div class="stat-label">Happy Clients</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card text-center">
+                    <div class="icon">
+                        <i class="bi bi-award-fill"></i>
+                    </div>
+                    <div class="stat-value">15+</div>
+                    <div class="stat-label">Years Experience</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card text-center">
+                    <div class="icon">
+                        <i class="bi bi-diagram-3-fill"></i>
+                    </div>
+                    <div class="stat-value">5000+</div>
+                    <div class="stat-label">Projects Completed</div>
+                        </div>
+                        </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card text-center">
+                    <div class="icon">
+                        <i class="bi bi-geo-alt-fill"></i>
+                    </div>
+                    <div class="stat-value">25+</div>
+                    <div class="stat-label">Cities Served</div>
+                </div>
+            </div>
+                        </div>
+                        </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 my-5 position-relative cta-section">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="cta-card p-5 text-center">
+                    <h2 class="fw-bold text-white mb-4">Ready to Experience Premier Dental Lab Services?</h2>
+                    <p class="lead text-white opacity-75 mb-4 mx-auto" style="max-width: 700px;">Join hundreds of satisfied dental professionals who trust us for quality restorations with unparalleled craftsmanship.</p>
+                    <div class="mt-5">
+                        <a href="{{ url_for('appointments') }}" class="btn btn-primary btn-lg px-5">
+                            <i class="bi bi-calendar-check me-2"></i>Book Your Consultation
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.cta-section {
+    background-color: var(--primary-dark);
+    overflow: hidden;
+}
+
+.cta-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/static/images/pattern.png');
+    background-size: 200px;
+    opacity: 0.05;
+}
+
+.cta-card {
+    background: linear-gradient(135deg, rgba(30, 77, 140, 0.95) 0%, rgba(15, 42, 80, 0.95) 100%);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cta-card::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(transparent, rgba(212, 175, 55, 0.1), transparent 30%);
+    animation: rotate 10s linear infinite;
+}
+
+@keyframes rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Hero Section */
+    .hero-section {
+        min-height: 600px;
+        background-color: var(--bs-primary);
+    }
+    
+    .hero-bg {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 60%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        clip-path: polygon(100px 0, 100% 0, 100% 100%, 0 100%);
+    }
+    
+    .hero-title {
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        animation: fadeInUp 1s ease-out;
+    }
+    
+    .hero-subtitle {
+        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        animation: fadeInUp 1.2s ease-out;
+    }
+    
+    /* Icon Wrappers */
+    .icon-wrapper {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background-color: rgba(var(--bs-primary-rgb), 0.1);
+        margin-bottom: 1.5rem;
+    }
+    
+    .icon-wrapper i {
+        font-size: 2rem;
+    }
+    
+    /* Service Cards */
+    .service-card {
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+    
+    .service-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .service-icon {
+        font-size: 2.5rem;
+        color: var(--bs-primary);
+    }
+    
+    /* Product Cards */
+    .product-card {
+        transition: all 0.3s ease;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .card-img-container {
+        height: 200px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .card-img-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .product-card:hover .card-img-container img {
+        transform: scale(1.05);
+    }
+    
+    /* Hover Cards */
+    .hover-card {
+        transition: all 0.3s ease;
+    }
+    
+    .hover-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    /* Testimonials */
+    .testimonial-card {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    
+    .testimonial-text {
+        font-style: italic;
+        font-size: 1.1rem;
+    }
+    
+    /* CTA Section */
+    .cta-section {
+        background: linear-gradient(to right, var(--bs-primary), var(--bs-primary-dark));
+        position: relative;
+    }
+    
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 30%;
+        height: 100%;
+        background-color: rgba(255,255,255,0.05);
+        clip-path: polygon(30% 0, 100% 0, 100% 100%, 0 100%);
+    }
+    
+    .cta-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: rgba(255,255,255,0.1);
+    }
+    
+    .cta-icon i {
+        font-size: 1.2rem;
+    }
+    
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %} 
